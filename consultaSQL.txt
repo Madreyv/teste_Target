@@ -1,0 +1,80 @@
+Sql para pesquisa: Faça uma busca utilizando comando SQL que traga o código, a razão social e o(s) telefone(s) de todos os clientes do estado de São Paulo (código “SP”);
+
+SELECT c.cliente_id, c.razao_social, t.numero
+FROM clientes c
+JOIN telefones t ON c.cliente_id = t.cliente_id
+JOIN estados e ON c.estado_id = e.estado_id
+WHERE e.sigla = 'SP';
+
+
+Script para criar banco de dados e popular tabelas
+
+
+CREATE DATABASE clientes_cadastro;
+
+CREATE TABLE Estados (
+    id_estado SERIAL PRIMARY KEY,
+    sigla VARCHAR(2) NOT NULL UNIQUE,
+    nome VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Tipos_Telefone (
+    id_tipo SERIAL PRIMARY KEY,
+    descricao VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE Clientes (
+    id_cliente SERIAL PRIMARY KEY,
+    razao_social VARCHAR(100) NOT NULL,
+    estado_id INT REFERENCES Estados(id_estado) ON DELETE SET NULL
+);
+
+CREATE TABLE Telefones (
+    id_telefone SERIAL PRIMARY KEY,
+    numero VARCHAR(15) NOT NULL,
+    tipo_id INT REFERENCES Tipos_Telefone(id_tipo) ON DELETE SET NULL,
+    cliente_id INT REFERENCES Clientes(id_cliente) ON DELETE CASCADE
+);
+
+
+-- Inserir dados na tabela Estados
+INSERT INTO Estados (sigla, nome) VALUES
+('SP', 'São Paulo'),
+('RJ', 'Rio de Janeiro'),
+('MG', 'Minas Gerais'),
+('RS', 'Rio Grande do Sul'),
+('BA', 'Bahia');
+
+-- Inserir dados na tabela Tipos_Telefone
+INSERT INTO Tipos_Telefone (descricao) VALUES
+('Comercial'),
+('Residencial'),
+('Celular'),
+('Fax');
+
+-- Inserir dados na tabela Clientes
+INSERT INTO Clientes (razao_social, estado_id) VALUES
+('Empresa A', 1),  -- São Paulo
+('Empresa B', 2),  -- Rio de Janeiro
+('Empresa C', 3),  -- Minas Gerais
+('Empresa D', 1),  -- São Paulo
+('Empresa E', 4);  -- Rio Grande do Sul
+
+-- Inserir dados na tabela Telefones
+INSERT INTO Telefones (numero, tipo_id, cliente_id) VALUES
+('11 91234-5678', 3, 1),  -- Empresa A - Celular
+('11 1234-5678', 1, 1),   -- Empresa A - Comercial
+('21 99876-5432', 3, 2),  -- Empresa B - Celular
+('21 2345-6789', 1, 2),   -- Empresa B - Comercial
+('31 98765-4321', 3, 3),  -- Empresa C - Celular
+('31 2345-6789', 2, 3),   -- Empresa C - Residencial
+('51 91234-5678', 3, 4),  -- Empresa D - Celular
+('51 1234-5678', 1, 4),   -- Empresa D - Comercial
+('71 99999-9999', 3, 5);  -- Empresa E - Celular
+
+-- Consultar os dados inseridos
+SELECT * FROM Estados;
+SELECT * FROM Tipos_Telefone;
+SELECT * FROM Clientes;
+SELECT * FROM Telefones;
+
