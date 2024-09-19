@@ -6,12 +6,25 @@
     <title>Relatório de Faturamento Diário</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body onload="carregarTabela()">
     <div class="container">
         <h1>Relatório de Faturamento</h1>
         <button id="calcular-btn" onclick="calcularFaturamento()">Calcular Faturamento</button>
+        <button id="calcular-btn" onclick="exibirDados()">Calcular Faturamento por Tabela</button>
         <div id="result" class="result"></div>
     </div>
+
+    <table id="tabelaFaturamento">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Valor de Faturamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Os dados serão inseridos aqui dinamicamente -->
+      </tbody>
+    </table>
 
     <script src="script.js"></script>
 </body>
